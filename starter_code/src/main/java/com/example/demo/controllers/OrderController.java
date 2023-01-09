@@ -2,6 +2,9 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import org.aspectj.weaver.ast.Or;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,25 +30,32 @@ public class OrderController {
 	
 	@Autowired
 	private OrderRepository orderRepository;
-	
+
+	public static final Logger log = LoggerFactory.getLogger(OrderController.class);
 	
 	@PostMapping("/submit/{username}")
 	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
 		if(user == null) {
-			return ResponseEntity.notFound().build();
+			ResponseEntity<UserOrder> response = ResponseEntity.notFound().build();
+			log.error("Submit order requests failures", response);
 		}
 		UserOrder order = UserOrder.createFromCart(user.getCart());
 		orderRepository.save(order);
-		return ResponseEntity.ok(order);
+		ResponseEntity<UserOrder> response = ResponseEntity.ok(order);
+		log.info("Submit order requests successes", response);
+		return response;
 	}
 	
 	@GetMapping("/history/{username}")
 	public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
 		if(user == null) {
-			return ResponseEntity.notFound().build();
+			ResponseEntity<UserOrder> response = ResponseEntity.notFound().build();
+			log.error("Get order requests failures", response);
 		}
-		return ResponseEntity.ok(orderRepository.findByUser(user));
+		ResponseEntity<List<UserOrder>> response = ResponseEntity.ok(orderRepository.findByUser(user));
+		log.info("Get order requests successes", response);
+		return response;
 	}
 }
