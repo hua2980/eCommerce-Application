@@ -57,6 +57,7 @@ public class UserController {
 				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
 			final ResponseEntity<User> response = ResponseEntity.badRequest().build();
 			log.error("CreateUser request failures", response);
+			return response;
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 

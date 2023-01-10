@@ -36,9 +36,10 @@ public class OrderController {
 	@PostMapping("/submit/{username}")
 	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
-		if(user == null) {
+		if(null == user) {
 			ResponseEntity<UserOrder> response = ResponseEntity.notFound().build();
-			log.error("Submit order requests failures", response);
+			log.info("Submit order requests failures", response);
+			return response;
 		}
 		UserOrder order = UserOrder.createFromCart(user.getCart());
 		orderRepository.save(order);
@@ -51,8 +52,9 @@ public class OrderController {
 	public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
 		if(user == null) {
-			ResponseEntity<UserOrder> response = ResponseEntity.notFound().build();
-			log.error("Get order requests failures", response);
+			ResponseEntity<List<UserOrder>> response = ResponseEntity.notFound().build();
+			log.info("Get order requests failures", response);
+			return response;
 		}
 		ResponseEntity<List<UserOrder>> response = ResponseEntity.ok(orderRepository.findByUser(user));
 		log.info("Get order requests successes", response);

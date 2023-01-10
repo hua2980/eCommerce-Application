@@ -162,6 +162,7 @@ public class OrderControllerTest {
         String invalidUsername = "test2";
 
         when(userRepository.findByUsername(invalidUsername)).thenReturn(null);
+
         final ResponseEntity<List<UserOrder>> response2 = orderController.getOrdersForUser(invalidUsername);
         Assert.assertNotNull(response2);
         Assert.assertEquals(404, response2.getStatusCodeValue());
