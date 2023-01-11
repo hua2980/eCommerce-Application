@@ -50,13 +50,13 @@ public class UserController {
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
-		log.info("User name set with ", createUserRequest.getUsername());
+		log.info("User name set with " + createUserRequest.getUsername());
 		Cart cart = new Cart();
 
 		if(createUserRequest.getPassword().length()<7 ||
 				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
 			final ResponseEntity<User> response = ResponseEntity.badRequest().build();
-			log.warn("CreateUser request failures", response);
+			log.warn("CreateUser request failures: " + "password too short");
 			return response;
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
@@ -65,7 +65,7 @@ public class UserController {
 		userRepository.save(user);
 		cartRepository.save(cart);
 		final ResponseEntity<User> response = ResponseEntity.ok(user);
-		log.info("CreateUser request successes", response);
+		log.info("CreateUser request successes");
 		return response;
 	}
 	
