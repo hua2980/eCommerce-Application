@@ -56,7 +56,7 @@ public class UserController {
 		if(createUserRequest.getPassword().length()<7 ||
 				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
 			final ResponseEntity<User> response = ResponseEntity.badRequest().build();
-			log.warn("CreateUser request failures: " + "password too short");
+			log.warn("CreateUser request failures");
 			return response;
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));

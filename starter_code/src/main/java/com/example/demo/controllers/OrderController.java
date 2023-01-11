@@ -37,7 +37,7 @@ public class OrderController {
 	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
 		if(null == user) {
-			log.warn("Submit order requests failures");
+			log.warn("Submit order requests failures because username don't exist");
 			ResponseEntity<UserOrder> response = ResponseEntity.notFound().build();
 			return response;
 		}
@@ -53,7 +53,7 @@ public class OrderController {
 		User user = userRepository.findByUsername(username);
 		if(user == null) {
 			ResponseEntity<List<UserOrder>> response = ResponseEntity.notFound().build();
-			log.warn("Get order requests failures");
+			log.warn("Submit order requests failures because username don't exist");
 			return response;
 		}
 		ResponseEntity<List<UserOrder>> response = ResponseEntity.ok(orderRepository.findByUser(user));
