@@ -1,7 +1,13 @@
 package com.example.demo.controllers;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+
+import com.auth0.jwt.JWT;
+import com.example.demo.security.SecurityConstants;
+import java.util.Date;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,9 +70,17 @@ public class UserController {
 		user.setCart(cart);
 		userRepository.save(user);
 		cartRepository.save(cart);
-		final ResponseEntity<User> response = ResponseEntity.ok(user);
 		log.info("CreateUser request successes");
-		return response;
+
+		// add JWT token to response header
+		String token = JWT.create()
+				.withSubject(user.getUsername())
+				.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+				.sign(HMAC512(SecurityConstants.SECRET.getBytes()));
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+
+		return ResponseEntity.ok().headers(headers).body(user);
 	}
 	
 }

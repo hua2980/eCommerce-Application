@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	private UserDetailsServiceImpl userDetailsService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
     public WebSecurityConfiguration(UserDetailsServiceImpl userDetailsService,
 			BCryptPasswordEncoder bCryptPasswordEncoder) {
@@ -24,15 +24,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.cors().and().csrf().disable().authorizeRequests()
-//                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-//                .addFilter(new JWTAuthenticationVerficationFilter(authenticationManager()))
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors().and().csrf().disable().authorizeRequests()
-                .anyRequest().permitAll();
+                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
+                .antMatchers(HttpMethod.POST, SecurityConstants.LOG_IN_URL).permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(new JWTAuthenticationVerficationFilter(authenticationManager()))
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        http.cors().and().csrf().disable().authorizeRequests()
+//                .anyRequest().permitAll();
     }
     
     @Override
